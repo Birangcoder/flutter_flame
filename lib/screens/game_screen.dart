@@ -12,7 +12,6 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  // Create one game instance for this screen.
   late final MyGame game;
 
   @override
@@ -23,7 +22,6 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   void dispose() {
-    // Release the game when the screen is removed.
     game.dispose();
     super.dispose();
   }
@@ -31,28 +29,44 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GameWidget<MyGame>(
-        game: game,
+      body: Stack(
+        children: [
+          // 1. The Flame game occupies the screen.
+          Positioned.fill(
+            child: GameWidget<MyGame>(
+              game: game,
 
-        // Show a loading indicator while the game loads.
-        loadingBuilder: (context) {
-          return const Center(child: CircularProgressIndicator());
-        },
+              // 2. Register the pause menu.
+              overlayBuilderMap: {
+                'PauseMenu': (context, game) {
+                  return PauseMenu(game: game);
+                },
+              },
 
-        // Display a simple error screen if loading fails.
-        errorBuilder: (context, error) {
-          return Center(child: Text('Failed to load game: $error'));
-        },
+              // Do not show the menu when the game starts.
+              initialActiveOverlays: const [],
+            ),
+          ),
 
-        // Flutter widgets that can appear over the game.
-        overlayBuilderMap: {
-          'PauseMenu': (context, game) {
-            return PauseMenu(game: game);
-          },
-        },
+          // 3. Flutter button above the game.
+          Positioned(
+            top: 40,
+            right: 20,
+            child: SafeArea(
+              child: IconButton(
+                style: IconButton.styleFrom(backgroundColor: Colors.white),
+                icon: const Icon(Icons.pause),
+                onPressed: () {
+                  // Stop game updates.
+                  game.pauseEngine();
 
-        // No overlay is displayed initially.
-        initialActiveOverlays: const [],
+                  // Display the pause menu.
+                  game.overlays.add('PauseMenu');
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
