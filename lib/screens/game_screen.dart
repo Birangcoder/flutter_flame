@@ -29,44 +29,18 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // 1. The Flame game occupies the screen.
-          Positioned.fill(
-            child: GameWidget<MyGame>(
-              game: game,
+      body: GameWidget<MyGame>(
+        game: game,
 
-              // 2. Register the pause menu.
-              overlayBuilderMap: {
-                'PauseMenu': (context, game) {
-                  return PauseMenu(game: game);
-                },
-              },
+        // 2. Register the pause menu.
+        overlayBuilderMap: {
+          'PauseMenu': (context, game) {
+            return PauseMenu(game: game);
+          },
+        },
 
-              // Do not show the menu when the game starts.
-              initialActiveOverlays: const [],
-            ),
-          ),
-
-          // 3. Flutter button above the game.
-          Positioned(
-            top: 40,
-            right: 20,
-            child: SafeArea(
-              child: IconButton(
-                style: IconButton.styleFrom(backgroundColor: Colors.white),
-                icon: const Icon(Icons.pause),
-                onPressed: () {
-                  // Stop game updates.
-                  game.pauseEngine();
-
-                  // Display the pause menu.
-                  game.overlays.add('PauseMenu');
-                },
-              ),
-            ),
-          ),
-        ],
+        // Do not show the menu when the game starts.
+        initialActiveOverlays: const [],
       ),
     );
   }

@@ -1,6 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flame/components/house_position_component.dart';
+
+import '../components/player_rectangle_component.dart';
+import '../components/wall_simple_component.dart';
 
 class MyGame extends FlameGame {
   @override
@@ -8,7 +12,7 @@ class MyGame extends FlameGame {
 
   @override
   Future<void> onLoad() async {
-    add(
+    addAll([
       TextComponent(
         text: 'Hello, Flame!',
         anchor: Anchor.center,
@@ -17,6 +21,10 @@ class MyGame extends FlameGame {
           style: const TextStyle(color: Colors.white, fontSize: 32),
         ),
       ),
-    );
+      Wall(),
+      GrassComponent(),
+      HouseComponent()
+    ]);
   }
 }
+
